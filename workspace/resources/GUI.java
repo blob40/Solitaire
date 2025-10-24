@@ -1,3 +1,7 @@
+// Alex Krouse
+// 10/24/2025
+//creating solitare as a playable game
+
 package resources;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,6 +15,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Stack;
 
 
 public class GUI extends JFrame implements ActionListener, MouseListener, MouseMotionListener{
@@ -22,7 +27,9 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
        setTitle("Solitaire");
        setSize(900,700);
        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-       
+
+
+
        // this supplies the background
        try {
 		System.out.println(getClass().toString());
@@ -38,13 +45,85 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
         * once you have confirmed that the card shows up properly. The code below should allow you to play the solitare
         * game once it's fully created.
         */
-       Card card = new Card(2, Card.Suit.Diamonds);
-       System.out.println(card);
-       this.add(card);    
+       //Card card = new Card(2, Card.Suit.Diamonds);
+      // System.out.println(card);
+       //this.add(card);    
+
+
+	   //Setting up deck where cards will be flipped down
+	  	JPanel deckPanel = new JPanel();
+        deckPanel.setSize(100,150);
+		deckPanel.setLayout(new FlowLayout());
+		deckPanel.setLocation(20,20);
+		deckPanel.setBackground(Color.YELLOW);
+		JLabel deckLabel = new JLabel("Deck");
+		deckPanel.add(deckLabel);
+		this.add(deckPanel);
+
+		//Revealed card and where cards will be dragged from
+		JPanel reveal = new JPanel();
+		reveal.setLayout(new FlowLayout());
+        reveal.setSize(200,150);
+		reveal.setLocation(125,20);
+		reveal.setBackground(Color.CYAN);
+		JLabel revealL = new JLabel("Revealed Cards");
+		reveal.add(revealL);
+		this.add(reveal);
+
+		// 7 piles for solitare
+		JPanel pile1 = new JPanel();
+		pile1.setLayout(new FlowLayout());
+        pile1.setSize(750,375);
+		pile1.setLocation(20, 175);
+		pile1.setBackground(Color.PINK);
+		JLabel pileL1 = new JLabel("7 Piles");
+		pile1.add(pileL1);
+		this.add(pile1);
+
+		//Where suits will be set A-K
+		JPanel completed = new JPanel();
+		completed.setLayout(new FlowLayout());
+        completed.setSize(400,150);
+		completed.setLocation(370, 20);
+		completed.setBackground(Color.ORANGE);
+		JLabel completedL = new JLabel("4 completion piles");
+		completed.add(completedL);
+		this.add(completed);
+
+// Created test to see stacked cards as revealed cards
+		Stack<Card> cardy = new Stack<>();
+		cardy.push(new Card(5, Card.Suit.Spades));
+		cardy.push(new Card(2, Card.Suit.Diamonds));
+		cardy.push(new Card(3, Card.Suit.Clubs));		
+		reveal.add(drawPile(cardy));
+
+
+		Card si = new Card(5, Card.Suit.Spades);
+		si.setPreferredSize(new Dimension(90,120));
+		si.hide();
+		deckPanel.add(si);
 
         this.setVisible(true);
     }
 
+
+// Creates a pile of flipped cards all next to each other so people can see the next card in the deck
+	 public JLayeredPane drawPile(Stack<Card> stackIn) {
+    Object cards[];
+    cards = stackIn.toArray(); 
+	int change = 5;
+	JLayeredPane piled = new JLayeredPane();
+    for (int i = 0; i < cards.length; i++){
+		Card card = (Card) cards[i];
+        card.setLocation(change, 0);
+		card.setSize(90,120);
+		piled.add(card);
+		change += 20;
+	}
+	piled.setPreferredSize(new Dimension(190,120));
+	return piled;
+
+}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
