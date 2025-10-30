@@ -21,6 +21,8 @@ import java.util.Stack;
 public class GUI extends JFrame implements ActionListener, MouseListener, MouseMotionListener{
 
 	Solitaire game;
+	private JLayeredPane screenLayers;
+	private JLayeredPane draggablePane;
    public GUI(Solitaire game){
 	   this.game= game;
         //Create and set up the window.
@@ -91,22 +93,61 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		this.add(completed);
 
 // Created test to see stacked cards as revealed cards
-		Stack<Card> cardy = new Stack<>();
-		cardy.push(new Card(5, Card.Suit.Spades));
-		cardy.push(new Card(2, Card.Suit.Diamonds));
-		cardy.push(new Card(3, Card.Suit.Clubs));		
-		reveal.add(drawPile(cardy));
-
-
+		Stack<Card> deck = new Stack<>();
+		for(int i = 1; i<=52; i++){
+			Suit current;
+			if(i<14){
+				suit = Card.Suit.Spades;
+			}
+			else if(i<27){
+				suit = Card.Suit.Clubs;
+			}
+			else if(i<40){
+				suit = Card.Suit.Hearts;
+			}
+			else {
+				suit = Card.Suit.Diamonds;
+			}
+			if(i==1||i==14||i==27||i==40){
+			 deck.push(new Card(1, suit));
+			}
+			else if(i==2||i==15||i==28||i==41){
+				deck.push(new Card(2, suit));
+			}
+			else if(i==11||i==24||i==37||i==50){
+				deck.push(new Card(11, suit));
+			}
+			else if(i==12||i==25||i==38||i==51){
+				deck.push(new Card(12, suit));
+			}
+			else if(i==13||i==26||i==39||i==52){
+				deck.push(new Card(13, suit));
+			}
+			
+		}
+	
 		Card si = new Card(5, Card.Suit.Spades);
 		si.setPreferredSize(new Dimension(90,120));
 		si.hide();
 		//deckPanel.add(si);
 
-       //JButton reDraw = new JButton();
-	   //reDraw.setPreferredSize(new Dimension(90,120));
-	   //reDraw.setBackground(Color.yellow);
-	   //deckPanel.add(reDraw);
+
+	//Repile button
+       JButton reDraw = new JButton();
+	   reDraw.setPreferredSize(new Dimension(90,120));
+	   reDraw.setBackground(Color.yellow);
+	   deckPanel.add(reDraw);
+       reDraw.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+	   				 System.out.println("Clicked");
+					 
+			}
+				
+			});
+
 
 		this.addMouseMotionListener(this);
 		this.addMouseListener(this);
@@ -138,10 +179,14 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	//JACK
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		int currX = arg0.getX();
-		int currY = arg0.getY();
-
-		
+		if (draggablePane!= null) {
+            Point pos = getLocationOnScreen();
+            pos.x = arg0.getLocationOnScreen().x - 50;
+            pos.y = arg0.getLocationOnScreen().y - 50;
+            draggablePane.setLocation(pos);
+            System.out.println("dragX: " + arg0.getX());
+   		}
+	repaint();
 		
 	}
 
@@ -157,14 +202,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		
 	}
 
-	@Override
-	//ALEX
-	public void mouseClicked(MouseEvent arg0) {
-
-		System.out.println("Clicked");
-		//mouseDragged();
-		
-	}
 
 	@Override
 	//
@@ -183,14 +220,25 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	//JACK
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		int currX = arg0.getX();
-		int currY = arg0.getY();
+		int x = arg0.getX();
+		int y = arg0.getY();
+		System.out.println(arg0.getSource().toString());
 
-		if (game.checkClick(currX, currY) && arg0)
+		if (game.checkPress(x, y) && arg0.getSource() instanceof Card)
 		{
-			System.out.println("Pressed");
-			return;
+			draggablePane = new JLayeredPane();
+			Point pos = getLocationOnScreen();
+			draggablePane.setSize(80,100);
+			((JPanel)arg0.getSource()).setLocation(0, 0);
+			draggablePane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.PINK));
+			draggablePane.add((Card)arg0.getSource());
+			System.out.println("press");
+			System.out.println("pressX: " + arg0.getX());
+			pos.x = arg0.getLocationOnScreen().x - 50;
+	        pos.y = arg0.getLocationOnScreen().y - 50;
+	        draggablePane.setLocation(pos);
 		}
+		screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);
 		repaint();
 	}
 
