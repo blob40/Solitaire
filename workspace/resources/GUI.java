@@ -101,7 +101,16 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		Card si = new Card(5, Card.Suit.Spades);
 		si.setPreferredSize(new Dimension(90,120));
 		si.hide();
-		deckPanel.add(si);
+		//deckPanel.add(si);
+
+       //JButton reDraw = new JButton();
+	   //reDraw.setPreferredSize(new Dimension(90,120));
+	   //reDraw.setBackground(Color.yellow);
+	   //deckPanel.add(reDraw);
+
+		this.addMouseMotionListener(this);
+		this.addMouseListener(this);
+
 
         this.setVisible(true);
     }
@@ -126,24 +135,39 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 }
 
 	@Override
+	//JACK
 	public void mouseDragged(MouseEvent arg0) {
 		// TODO Auto-generated method stub
+		int currX = arg0.getX();
+		int currY = arg0.getY();
+
+		
 		
 	}
 
 	@Override
+
+	//ALEX
 	public void mouseMoved(MouseEvent arg0) {
+		double screenx = arg0.getX();
+		double screeny = arg0.getY();
+
+		// System.out.println("screen x " + screenx + "screen y " + screeny);
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
+	//ALEX
 	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+
+		System.out.println("Clicked");
+		//mouseDragged();
 		
 	}
 
 	@Override
+	//
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
@@ -156,16 +180,33 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	}
 
 	@Override
+	//JACK
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		
+		int currX = arg0.getX();
+		int currY = arg0.getY();
+
+		if (game.checkClick(currX, currY) && arg0)
+		{
+			System.out.println("Pressed");
+			return;
+		}
+		repaint();
 	}
 
 	@Override
+	//ABBY
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	//ABBY if needed
+	public void createBoard(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

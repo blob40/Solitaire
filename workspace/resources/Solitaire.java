@@ -8,4 +8,8 @@ public class Solitaire {
 	Queue<Card> deck;
 	
 	//the part of your program that's in charge of game rules goes here.
+	public boolean checkClick(int x, int y)
+	{
+		return true;
+	}
 }
