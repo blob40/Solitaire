@@ -21,9 +21,9 @@ import java.util.Stack;
 public class GUI extends JFrame implements ActionListener, MouseListener, MouseMotionListener{
 
 	Solitaire game;
-	private JLayeredPane screenLayers;
+	private JLayeredPane screenLayers = getLayeredPane();
 	private JLayeredPane draggablePane;
-   public GUI(Solitaire game){
+   	public GUI(Solitaire game){
 	   this.game= game;
         //Create and set up the window.
        setTitle("Solitaire");
@@ -94,7 +94,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 
 // Created test to see stacked cards as revealed cards
 		Stack<Card> deck = new Stack<>();
-		for(int i = 1; i<=52; i++){
+		deck.push(new Card(5, Card.Suit.Spades));
+		deck.push(new Card(2, Card.Suit.Spades));
+		reveal.add(drawPile(deck));
+	 /* 	for(int i = 1; i<=52; i++){
 			Suit current;
 			if(i<14){
 				suit = Card.Suit.Spades;
@@ -122,14 +125,14 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			}
 			else if(i==13||i==26||i==39||i==52){
 				deck.push(new Card(13, suit));
+			   }
 			}
-			
-		}
+		*/
 	
 		Card si = new Card(5, Card.Suit.Spades);
 		si.setPreferredSize(new Dimension(90,120));
 		si.hide();
-		//deckPanel.add(si);
+		reveal.add(si);
 
 
 	//Repile button
@@ -143,7 +146,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 	   				 System.out.println("Clicked");
-					 
+		
+					 repaint();
 			}
 				
 			});
@@ -183,9 +187,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
             Point pos = getLocationOnScreen();
             pos.x = arg0.getLocationOnScreen().x - 50;
             pos.y = arg0.getLocationOnScreen().y - 50;
-            draggablePane.setLocation(pos);
-            System.out.println("dragX: " + arg0.getX());
-   		}
+            draggablePane.setLocation(pos);   		}
 	repaint();
 		
 	}
@@ -222,7 +224,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		// TODO Auto-generated method stub
 		int x = arg0.getX();
 		int y = arg0.getY();
-		System.out.println(arg0.getSource().toString());
 
 		if (game.checkPress(x, y) && arg0.getSource() instanceof Card)
 		{
@@ -232,8 +233,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			((JPanel)arg0.getSource()).setLocation(0, 0);
 			draggablePane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.PINK));
 			draggablePane.add((Card)arg0.getSource());
-			System.out.println("press");
-			System.out.println("pressX: " + arg0.getX());
 			pos.x = arg0.getLocationOnScreen().x - 50;
 	        pos.y = arg0.getLocationOnScreen().y - 50;
 	        draggablePane.setLocation(pos);
