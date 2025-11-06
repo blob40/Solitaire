@@ -21,10 +21,19 @@ import java.util.Stack;
 public class GUI extends JFrame implements ActionListener, MouseListener, MouseMotionListener{
 
 	Solitaire game;
-	private JLayeredPane screenLayers = getLayeredPane();
+	private JLayeredPane screenLayers;
 	private JLayeredPane draggablePane;
+	private JPanel deckPanel ;
+	private JPanel reveal;
+	private JPanel pile1;
+	private JPanel completed;
+
    	public GUI(Solitaire game){
 	   this.game= game;
+	  // for(Card card: game.getDeck()){
+	//	card.addMouseListener(this);
+		//card.addMouseMotionListener(this);
+	 //  }
         //Create and set up the window.
        setTitle("Solitaire");
        setSize(900,700);
@@ -50,10 +59,11 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
        //Card card = new Card(2, Card.Suit.Diamonds);
       // System.out.println(card);
        //this.add(card);    
+	   
 
 
 	   //Setting up deck where cards will be flipped down
-	  	JPanel deckPanel = new JPanel();
+	  	deckPanel = new JPanel();
         deckPanel.setSize(100,150);
 		deckPanel.setLayout(new FlowLayout());
 		deckPanel.setLocation(20,20);
@@ -63,7 +73,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		this.add(deckPanel);
 
 		//Revealed card and where cards will be dragged from
-		JPanel reveal = new JPanel();
+		reveal = new JPanel();
 		reveal.setLayout(new FlowLayout());
         reveal.setSize(200,150);
 		reveal.setLocation(125,20);
@@ -73,7 +83,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		this.add(reveal);
 
 		// 7 piles for solitare
-		JPanel pile1 = new JPanel();
+		pile1 = new JPanel();
 		pile1.setLayout(new FlowLayout());
         pile1.setSize(750,375);
 		pile1.setLocation(20, 175);
@@ -83,7 +93,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		this.add(pile1);
 
 		//Where suits will be set A-K
-		JPanel completed = new JPanel();
+		completed = new JPanel();
 		completed.setLayout(new FlowLayout());
         completed.setSize(400,150);
 		completed.setLocation(370, 20);
@@ -92,47 +102,19 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		completed.add(completedL);
 		this.add(completed);
 
+		screenLayers = getLayeredPane();
+
 // Created test to see stacked cards as revealed cards
 		Stack<Card> deck = new Stack<>();
-		deck.push(new Card(5, Card.Suit.Spades));
-		deck.push(new Card(2, Card.Suit.Spades));
-		reveal.add(drawPile(deck));
-	 /* 	for(int i = 1; i<=52; i++){
-			Suit current;
-			if(i<14){
-				suit = Card.Suit.Spades;
-			}
-			else if(i<27){
-				suit = Card.Suit.Clubs;
-			}
-			else if(i<40){
-				suit = Card.Suit.Hearts;
-			}
-			else {
-				suit = Card.Suit.Diamonds;
-			}
-			if(i==1||i==14||i==27||i==40){
-			 deck.push(new Card(1, suit));
-			}
-			else if(i==2||i==15||i==28||i==41){
-				deck.push(new Card(2, suit));
-			}
-			else if(i==11||i==24||i==37||i==50){
-				deck.push(new Card(11, suit));
-			}
-			else if(i==12||i==25||i==38||i==51){
-				deck.push(new Card(12, suit));
-			}
-			else if(i==13||i==26||i==39||i==52){
-				deck.push(new Card(13, suit));
-			   }
-			}
-		*/
-	
+		Card c1 = new Card(5, Card.Suit.Spades);
+		c1.addMouseListener(this);
+		
+		
 		Card si = new Card(5, Card.Suit.Spades);
+		si.addMouseListener(this);
 		si.setPreferredSize(new Dimension(90,120));
 		si.hide();
-		reveal.add(si);
+		deckPanel.add(si);
 
 
 	//Repile button
@@ -144,10 +126,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-	   				 System.out.println("Clicked");
-		
-					 repaint();
+					mouseClicked(null);
+					repaint();
 			}
 				
 			});
@@ -155,12 +135,46 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 
 		this.addMouseMotionListener(this);
 		this.addMouseListener(this);
-
-
+		game.setup();
+		int xOffset = 0;
+		int yOffset = 0;
+		for(Stack<Card> row: game.columns){
+			for(Card c: row){
+				//System.out.println("Adding card: " + c.toString());
+				c.setLocation(xOffset, yOffset);
+				c.setSize(85, 118); 
+				pile1.add(c); 
+				yOffset += 20; 
+			}
+			yOffset = 0;
+			xOffset +=20;
+		}
         this.setVisible(true);
     }
 
+/*private void update() {
 
+    columns.removeAll();
+    topColumns.removeAll();
+	ArrayList<Stack<Card>> allColumns = game.getColumns();
+
+	for(Stack<Card> stack: allColumns) {
+		topColumns.add(drawPile(stack, false)); 
+	}
+
+	columns.add(drawDeck(game.getDeck()));
+	columns.add(drawPile(game.getPile(), true));
+	columns.add(drawFinal(game.hearts, "hearts"));
+	columns.add(drawFinal(game.spades, "spades"));
+	columns.add(drawFinal(game.diamonds, "diamonds"));
+	columns.add(drawFinal(game.clubs, "clubs"));
+	System.out.println("updating");
+
+    this.revalidate();
+    this.repaint();
+
+}
+*/
 // Creates a pile of flipped cards all next to each other so people can see the next card in the deck
 	 public JLayeredPane drawPile(Stack<Card> stackIn) {
     Object cards[];
@@ -199,11 +213,32 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		double screenx = arg0.getX();
 		double screeny = arg0.getY();
 
-		// System.out.println("screen x " + screenx + "screen y " + screeny);
+		System.out.println("screen x " + screenx + "screen y " + screeny);
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	//ALEX
+	public void mouseClicked(MouseEvent arg0){
+		if (arg0.getX() < 120 && arg0.getX() > 20 && arg0.getY() < 185 && arg0.getY() > 60){
+			reveal.add(game.reveal3());
+			repaint();
+			if (game.getDeck() == null){
+			//deckPanel.add(game.revealOne().hide());
+			 game.getRevealed().clear();
+			 reveal.removeAll();
+			 repaint();
+			}
+			else {
+				System.out.println("Clicked");
+			}
+		} 
 
+		
+		// TODO Auto-generated method stub
+	
+	}
 
 	@Override
 	//
@@ -224,33 +259,59 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		// TODO Auto-generated method stub
 		int x = arg0.getX();
 		int y = arg0.getY();
+		Card c = (Card)arg0.getSource();
 
 		if (game.checkPress(x, y) && arg0.getSource() instanceof Card)
 		{
 			draggablePane = new JLayeredPane();
 			Point pos = getLocationOnScreen();
-			draggablePane.setSize(80,100);
-			((JPanel)arg0.getSource()).setLocation(0, 0);
+			
+
+			draggablePane.setSize(150,120);
 			draggablePane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.PINK));
-			draggablePane.add((Card)arg0.getSource());
+			c.setLocation(0, 0);
+			JLayeredPane pile = ((JPanel)arg0.getSource()).getParent();
+			int cardPos = pile.getPosition(c);
+			/*for (int i = cardPos; pile.getPosition(c); i > 0; i--)
+			{
+				Card temp = pile.getComponent(i);
+				temp.setLocation(0, 10 * cardPos - i);
+				draggablePane.add(temp, cardPos - i);
+			}*/
+			draggablePane.add(c);
+
 			pos.x = arg0.getLocationOnScreen().x - 50;
 	        pos.y = arg0.getLocationOnScreen().y - 50;
 	        draggablePane.setLocation(pos);
+			screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);
 		}
-		screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);
 		repaint();
 	}
 
 	@Override
 	//ABBY
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	//ABBY if needed
-	public void createBoard(ActionEvent arg0) {
-		// TODO Auto-generated method stub
+		int x = arg0.getX();
+		int y = arg0.getY();
+		Card current = (Card)arg0.getSource();
+		Card m;
+		Point p = arg0.getLocation();
+		boolean type;
+		if (pile1.contains(p)) {
+            m = (Card)pile1.findComponentAt(p);
+			type = false;
+			if(game.checkMove(current, m, type)){
+				current.setLocation(m.getLocation());
+			}
+        } else if (completed.contains(p)){
+            m = (Card)completed.findComponentAt(p);
+			type = true;
+			if(game.checkMove(current, m, type)){
+				current.setLocation(m.getLocation());
+			}
+        }
+		screenLayers.remove(draggablePane);
+		repaint();
 		
 	}
 
