@@ -54,14 +54,13 @@ public class Solitaire {
 		for (int i = 0; i < 3; i++){
 		c = deck.remove();
 		revealed.add(c);
+		
 	}
-		System.out.println("Card " + c);
-		System.out.println(revealed);
 		return c;
 	}
 
 	
-	public boolean checkMove(Card current, Card m, boolean type){
+	public boolean checkReveal(Card current, Card m, boolean type){
 		if(type){
 			if((m.suit.equals(current.suit))&&(m.value == (current.value-1))){
 				return true;
@@ -75,9 +74,9 @@ public class Solitaire {
 	}       
    
 
-   public Container getContainer(Card c){
+   //public Container getContainer(Card c){
 	
-   }
+  // }
 
 	public Queue<Card> getDeck(){
 		return deck;
