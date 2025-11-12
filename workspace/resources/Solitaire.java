@@ -54,6 +54,16 @@ public class Solitaire {
 		
 	}
 
+	 public void resetRevealed() {
+
+		while (revealed.isEmpty() == false) {
+	        	Card c = revealed.pop();
+				c.hide();
+	        	deck.add(c);
+	        }
+		revealed.clear();
+	    }
+
 	public void reveal3(){
 		Card c = null;
 		for (int i = 0; i < 3; i++){
@@ -74,7 +84,7 @@ public class Solitaire {
 
 	//the part of your program that's in charge of game rules goes here.
 
-	public boolean checkReveal(Card current, Card m, boolean type){
+	public boolean checkRelease(Card current, Card m, boolean type){
 		if(type){
 			if((m.suit.equals(current.suit))&&(m.value == (current.value-1))){
 				return true;
@@ -89,7 +99,7 @@ public class Solitaire {
 
 	public JLayeredPane checkPress(Card c, JLayeredPane pile)
 	{
-		if (pile != null)
+		if (pile != null && c.isReversed == false)
 		{
 			JLayeredPane pane = new JLayeredPane();
 
@@ -132,4 +142,6 @@ public class Solitaire {
 		}
 		return false;
 	}
+
+   
 }

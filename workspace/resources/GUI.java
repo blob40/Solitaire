@@ -1,3 +1,4 @@
+
 // Alex Krouse
 // 10/24/2025
 //creating solitare as a playable game
@@ -233,42 +234,41 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	public void mouseClicked(MouseEvent arg0){
 		Stack<Card> revealed;
 		Point p = SwingUtilities.convertPoint((Component)arg0.getSource(), arg0.getPoint(), deckPanel);	
-		if(deckPanel.contains(p) && game.getDeck().peek() != null){
+		
+		if(deckPanel.contains(p) && game.getDeck().peek() != null && reveal.getComponentCount() <= 6){
 			Card c = (Card)deckPanel.getComponentAt(p);
 			revealed = game.getRevealed();
 			System.out.println(revealed);
 			int y = 105;
+			int count = 0;
 			for (int i = 0; i<revealed.size(); i++){
-				Card d = revealed.get(i);
-				d.show();
-				d.setSize(90, 120);
-				d.setLocation(y - 20 * i, 25);
-				reveal.add(d);
-				Card f = game.getDeck().peek();
-				f.hide();
-				f.setLocation(5, 25);
-				f.setSize(90,120);
-				deckPanel.add(f);
-				repaint();
+					Card d = revealed.get(i);
+					d.show();
+					d.setSize(90, 120);
+					d.setLocation(y - 20 * count, 25);
+					reveal.add(d);
+					Card f = game.getDeck().peek();
+					f.hide();
+					f.setLocation(5, 25);
+					f.setSize(90,120);
+					deckPanel.add(f);
+					count++;
+					repaint();
 			}
 			game.reveal3();
 			revealed = game.getRevealed();
 			repaint();
-		}  else {
-			for (Component comp : reveal.getComponents()) {
-				reveal.remove(comp);
-				deckPanel.add(comp);
-				//Card card = comp;
-				//deckPanel.add(card);
-				//card.setLocation(5, 25);
-				//card.setSize(90,120);
-				//card.hide();
-				repaint();
-			}
-			System.out.println("No card to reveal");
-		}
-
-		
+		} else if (deckPanel.contains(p) && game.getDeck().peek() != null){
+			//reset revealed cards back to deck
+					game.resetRevealed();
+					 for (Component comp : reveal.getComponents()) {
+						 if (comp instanceof Card){
+							comp.setPreferredSize(new Dimension(90,120));
+					    	reveal.remove(comp); 
+						 }
+					 }
+					repaint();
+				}
 	}
 
 
@@ -355,32 +355,42 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	@Override
 	//ABBY
 	public void mouseReleased(MouseEvent arg0) {
-		/*int x = arg0.getX();
-		int y = arg0.getY();
+
 		Card current = (Card)arg0.getSource();
-		Card m;
+		Card m = null;
 		Point p = arg0.getLocationOnScreen();
 		boolean type;
-		if (pile1.contains(p)) {
-            m = (Card)pile1.findComponentAt(p);
+		if (pile1 != null && pile1.getBounds().contains(p)) {
+            Component[] components = pile1.getComponents();
+			for (Component comp : components) {
+        		if (comp.getBounds().contains(p)) {
+					m = (Card)comp;
+				}
+        }
 			type = false;
 			if(game.checkRelease(current, m, type)){
 				current.setLocation(m.getLocation());
 			}
-        } else if (completed.contains(p)){
-            m = (Card)completed.findComponentAt(p);
+    } else if(completed != null && completed.getBounds().contains(p)){
+			Component[] components = completed.getComponents();
+			for (Component comp : components) {
+        		if (comp.getBounds().contains(p)) {
+					m = (Card)comp;
+				}
 			type = true;
 			if(game.checkRelease(current, m, type)){
 				current.setLocation(m.getLocation());
 			}
-        } else{
-			current.setLocation(p);
+        } 
+		}else{
+			//move card back
 		}
-		if (screenLayers != null)
+		/*if (screenLayers != null)
 		{
 			screenLayers.remove(draggablePane);
 			repaint();
-		}*/
+	}
+		*/
 		
 		
 	}
