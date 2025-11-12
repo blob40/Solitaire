@@ -2,9 +2,14 @@
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.Stack;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLayeredPane;
+
 import java.util.Collections;
 import java.util.List;
 import java.awt.Component;
+import java.awt.*;
 import java.util.*;
 
 public class Solitaire {
@@ -21,7 +26,8 @@ public class Solitaire {
 
 		for(Card.Suit s: Card.Suit.values()){
 			for(int i = 1; i < 14; i++){
-				deck.add(new Card(i, s));
+				Card newC = new Card(i,s);
+				deck.add(newC);
 			}
 		}
 	}
@@ -40,26 +46,34 @@ public class Solitaire {
 			columns.add(row);
 			j--;
 		}		
-        reveal3();
+		reveal3();
 	}
-
 
 	public Stack getRevealed (){
 		return revealed;
 		
 	}
 
-	public Card reveal3(){
+	public void reveal3(){
 		Card c = null;
 		for (int i = 0; i < 3; i++){
 		c = deck.remove();
 		revealed.add(c);
-		
+		//System.out.println(c);
 	}
-		return c;
+	    
+	} 
+
+   //public Container getContainer(Card c){
+	
+  // }
+
+	public Queue<Card> getDeck(){
+		return deck;
 	}
 
-	
+	//the part of your program that's in charge of game rules goes here.
+
 	public boolean checkReveal(Card current, Card m, boolean type){
 		if(type){
 			if((m.suit.equals(current.suit))&&(m.value == (current.value-1))){
@@ -71,21 +85,42 @@ public class Solitaire {
 			}
 		}
 		return false;
-	}       
-   
+	} 
 
-   //public Container getContainer(Card c){
-	
-  // }
+	public JLayeredPane checkPress(Card c, JLayeredPane pile)
+	{
+		if (pile != null)
+		{
+			JLayeredPane pane = new JLayeredPane();
 
-	public Queue<Card> getDeck(){
-		return deck;
+			
+			pane.setSize(150,120);
+			//draggablePane.add(c);
+			pane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.PINK));
+			c.setLocation(0, 0);
+			//the pile where the card is at
+			
+			//the layer the card is at
+			int cardPos = pile.getPosition(c);
+			//add every card under to the pile
+			for (int i = 0; i <= cardPos; i++)
+			{
+				Stack<Card> temp = new Stack<>();
+				Card temp1 = (Card) pile.getComponent(0);
+				temp1.setLocation(20 * i, 0);
+				pane.add(temp1);
+
+			}
+			return pane;
+		}
+		return null;
 	}
-	//the part of your program that's in charge of game rules goes here.
-	public boolean checkPress(int x, int y)
+
+	public boolean checkClick(int x, int y)
 	{
 		return true;
 	}
+
 	public boolean checkWin()
 	{
 		for (Stack<Card> s: columns)

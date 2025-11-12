@@ -30,10 +30,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 
    	public GUI(Solitaire game){
 	   this.game= game;
-	  // for(Card card: game.getDeck()){
-	//	card.addMouseListener(this);
-		//card.addMouseMotionListener(this);
-	 //  }
+	   for(Card card: game.getDeck()){
+	card.addMouseListener(this);
+	card.addMouseMotionListener(this);
+	  }
         //Create and set up the window.
        setTitle("Solitaire");
        setSize(900,700);
@@ -108,12 +108,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		Card c1 = new Card(5, Card.Suit.Spades);
 		c1.addMouseListener(this);
 		
-		
-		Card si = new Card(5, Card.Suit.Spades);
-		si.addMouseListener(this);
-		si.setPreferredSize(new Dimension(90,120));
-		si.hide();
-		deckPanel.add(si);
 
 
 		game.setup();
@@ -121,6 +115,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		int yOffset = 130;
 		int newOffset = 130;
 		//Card c: row
+
+
 		for(Stack<Card> row: game.columns){
 			Object[] rowOb;
 			rowOb = row.toArray();
@@ -144,7 +140,10 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			xOffset += 110;
 		}
 
-
+		Card f = game.getDeck().peek();
+		f.setPreferredSize(new Dimension(90,120));
+		f.hide();
+		deckPanel.add(f); 
 		
 		/*Stack<Card> dk = new Stack<>();
 		Card card = new Card(2, Card.Suit.Diamonds);
@@ -233,32 +232,45 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	//ALEX
 	public void mouseClicked(MouseEvent arg0){
 		Stack<Card> revealed;
-		if (arg0.getX() < 120 && arg0.getX() > 20 && arg0.getY() < 185 && arg0.getY() > 60){
+		Point p = SwingUtilities.convertPoint((Component)arg0.getSource(), arg0.getPoint(), deckPanel);	
+		if(deckPanel.contains(p) && game.getDeck().peek() != null){
+			Card c = (Card)deckPanel.getComponentAt(p);
 			revealed = game.getRevealed();
 			System.out.println(revealed);
+			int y = 105;
 			for (int i = 0; i<revealed.size(); i++){
-				Card c = revealed.get(i);
-				c.setSize(90, 120);
-				c.setLocation(i * 20, 0);
-					reveal.add(c);
-					
+				Card d = revealed.get(i);
+				d.show();
+				d.setSize(90, 120);
+				d.setLocation(y - 20 * i, 25);
+				reveal.add(d);
+				Card f = game.getDeck().peek();
+				f.hide();
+				f.setLocation(5, 25);
+				f.setSize(90,120);
+				deckPanel.add(f);
+				repaint();
 			}
+			game.reveal3();
+			revealed = game.getRevealed();
 			repaint();
-			//game.getRevealed().clear();
-			//System.out.println(revealed);
-			//game.reveal3();
-			//revealed = game.getRevealed();
-			//System.out.println(revealed);
-			//if (game.getDeck() == null){
-			//deckPanel.add(game.revealOne().hide());
-			// game.getRevealed().clear();
-			// reveal.removeAll();
-			// repaint();
-			
-			} else {
-				System.out.println("Clicked");
+		}  else {
+			for (Component comp : reveal.getComponents()) {
+				reveal.remove(comp);
+				deckPanel.add(comp);
+				//Card card = comp;
+				//deckPanel.add(card);
+				//card.setLocation(5, 25);
+				//card.setSize(90,120);
+				//card.hide();
+				repaint();
 			}
-		} 
+			System.out.println("No card to reveal");
+		}
+
+		
+	}
+
 
 		
 		// TODO Auto-generated method stub
@@ -283,9 +295,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		int x = arg0.getX();
-		int y = arg0.getY();
 		Card c = (Card)arg0.getSource();
+		Point pos = getLocationOnScreen();
 		JLayeredPane pile = null;
 
 		if (((JPanel)arg0.getSource()).getParent() instanceof JLayeredPane)
@@ -295,10 +306,21 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		
 		
 
-		if (game.checkPress(x, y) && arg0.getSource() instanceof Card && pile != null)
+		if (arg0.getSource() instanceof Card && pile != null)
 		{
-			draggablePane = new JLayeredPane();
-			Point pos = getLocationOnScreen();
+			if (game.checkPress(c, pile) != null)
+			{
+				draggablePane = game.checkPress(c, pile);
+				pos.x = arg0.getLocationOnScreen().x - 50;
+	        	pos.y = arg0.getLocationOnScreen().y - 50;
+	        	draggablePane.setLocation(pos);
+				screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);
+			}
+			else{
+				return;
+			}
+			/*draggablePane = new JLayeredPane();
+			
 			
 			draggablePane.setSize(150,120);
 			//draggablePane.add(c);
@@ -322,7 +344,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			pos.x = arg0.getLocationOnScreen().x - 50;
 	        pos.y = arg0.getLocationOnScreen().y - 50;
 	        draggablePane.setLocation(pos);
-			screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);
+			screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);*/
 			System.out.println(draggablePane.toString());
 			
 		}
@@ -351,8 +373,9 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			if(game.checkRelease(current, m, type)){
 				current.setLocation(m.getLocation());
 			}
-        }
-			//else put card back where it came from
+        } else{
+			current.setLocation(p);
+		}
 		if (screenLayers != null)
 		{
 			screenLayers.remove(draggablePane);
