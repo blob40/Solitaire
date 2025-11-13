@@ -62,6 +62,8 @@ public class Solitaire {
 	        	deck.add(c);
 	        }
 		revealed.clear();
+
+		
 	    }
 
 	public void reveal3(){

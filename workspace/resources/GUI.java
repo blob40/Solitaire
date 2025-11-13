@@ -245,6 +245,11 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 					Card d = revealed.get(i);
 					d.show();
 					d.setSize(90, 120);
+					//	if (reveal.getComponentCount() <= 3){
+					//	d.setLocation(y - 20 * count, 25);
+				//	} else {
+				//		d.setLocation(y - 20 * count + 60, 25);
+				//	}
 					d.setLocation(y - 20 * count, 25);
 					reveal.add(d);
 					Card f = game.getDeck().peek();
@@ -258,17 +263,45 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			game.reveal3();
 			revealed = game.getRevealed();
 			repaint();
+			
 		} else if (deckPanel.contains(p) && game.getDeck().peek() != null){
 			//reset revealed cards back to deck
 					game.resetRevealed();
+					game.reveal3();
+					revealed = game.getRevealed();
+					System.out.println(revealed);
+					
 					 for (Component comp : reveal.getComponents()) {
 						 if (comp instanceof Card){
 							comp.setPreferredSize(new Dimension(90,120));
 					    	reveal.remove(comp); 
 						 }
 					 }
-					repaint();
+				
+				int y = 5;
+				int count = 0;
+				for (int i = 0; i<revealed.size(); i++){
+					Card d = revealed.get(i);
+					d.show();
+					d.setSize(90, 120);
+					d.setLocation(y - 20 * count, 25);
+					reveal.add(d);
+					Card f = game.getDeck().peek();
+					f.hide();
+					f.setLocation(5, 25);
+					f.setSize(90,120);
+					deckPanel.add(f);
+					count++;
+			}
+				
+				// Prepare next 3 cards for next click
+				game.reveal3();
+				revealed = game.getRevealed();
+				repaint();
+	
 				}
+					
+					 
 	}
 
 
