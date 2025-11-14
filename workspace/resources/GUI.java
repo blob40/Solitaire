@@ -146,7 +146,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 
 
 		
-		/*Stack<Card> dk = new Stack<>();
+		Stack<Card> dk = new Stack<>();
 		Card card = new Card(2, Card.Suit.Diamonds);
 		card.addMouseListener(this);
 		card.addMouseMotionListener(this);
@@ -159,7 +159,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		dk.add(card);
 		dk.add(card2);
 		dk.add(card3);
-		reveal.add(drawPile(dk));*/
+		reveal.add(drawPile(dk));
         this.setVisible(true);
     }
 
@@ -283,9 +283,8 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		int x = arg0.getX();
-		int y = arg0.getY();
 		Card c = (Card)arg0.getSource();
+		Point pos = getLocationOnScreen();
 		JLayeredPane pile = null;
 
 		if (((JPanel)arg0.getSource()).getParent() instanceof JLayeredPane)
@@ -295,19 +294,31 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		
 		
 
-		if (game.checkPress(x, y) && arg0.getSource() instanceof Card && pile != null)
+		if (arg0.getSource() instanceof Card && pile != null)
 		{
-			draggablePane = new JLayeredPane();
-			Point pos = getLocationOnScreen();
+			
+			if (game.checkPress(c, pile) != null)
+			{
+				pile = (JLayeredPane) ((JPanel)arg0.getSource()).getParent();
+				draggablePane = game.checkPress(c, pile);
+				pos.x = arg0.getLocationOnScreen().x - 50;
+	        	pos.y = arg0.getLocationOnScreen().y - 50;
+	        	draggablePane.setLocation(pos);
+				screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);
+			}
+			
+			/*draggablePane = new JLayeredPane();
+			
 			
 			draggablePane.setSize(150,120);
 			//draggablePane.add(c);
 			draggablePane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.PINK));
 			c.setLocation(0, 0);
 			//the pile where the card is at
-			
+			pile = (JLayeredPane) ((JPanel)arg0.getSource()).getParent();
 			//the layer the card is at
 			int cardPos = pile.getPosition(c);
+			System.out.println(cardPos);
 			//add every card under to the pile
 			for (int i = 0; i <= cardPos; i++)
 			{
@@ -322,8 +333,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			pos.x = arg0.getLocationOnScreen().x - 50;
 	        pos.y = arg0.getLocationOnScreen().y - 50;
 	        draggablePane.setLocation(pos);
-			screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);
-			System.out.println(draggablePane.toString());
+			screenLayers.add(draggablePane, JLayeredPane.DRAG_LAYER);*/
 			
 		}
 		
@@ -352,12 +362,12 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 				current.setLocation(m.getLocation());
 			}
         }
-			//else put card back where it came from
-		if (screenLayers != null)
+			//else put card back where it came from*/
+		if (draggablePane != null)
 		{
 			screenLayers.remove(draggablePane);
 			repaint();
-		}*/
+		}
 		
 		
 	}

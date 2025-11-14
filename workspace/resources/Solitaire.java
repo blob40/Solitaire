@@ -1,11 +1,10 @@
               package resources;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.Stack;
-import java.util.Collections;
-import java.util.List;
-import java.awt.Component;
 import java.util.*;
+import java.util.Queue;
+import java.awt.*;
+
+import javax.swing.BorderFactory;
+import javax.swing.JLayeredPane;
 
 public class Solitaire {
 	ArrayList<Stack <Card>> columns;
@@ -29,7 +28,7 @@ public class Solitaire {
 	 public void setup(){
 		//Card[] deck = deck.toArray();
 		//ArrayList<Card> deck = Arrays.asList(deck);
-		Collections.shuffle((List<?>) deck);
+		//Collections.shuffle((List<?>) deck);
 		int j = 6;
 		for(int i = 0; i<8; i++){
 			Stack<Card> row = new Stack<>();
@@ -82,10 +81,35 @@ public class Solitaire {
 		return deck;
 	}
 	//the part of your program that's in charge of game rules goes here.
-	public boolean checkPress(int x, int y)
+	public JLayeredPane checkPress(Card c, JLayeredPane pile)
 	{
-		return true;
+		if (pile != null && c.isReversed == false)
+		{
+			JLayeredPane pane = new JLayeredPane();
+
+			
+			pane.setSize(150,120);
+			//draggablePane.add(c);
+			pane.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.PINK));
+			c.setLocation(0, 0);
+			//the pile where the card is at
+			
+			//the layer the card is at
+			int cardPos = pile.getPosition(c);
+			//add every card under to the pile
+			for (int i = 0; i <= cardPos; i++)
+			{
+				Stack<Card> temp = new Stack<>();
+				Card temp1 = (Card) pile.getComponent(0);
+				temp1.setLocation(20 * i, 0);
+				pane.add(temp1);
+
+			}
+			return pane;
+		}
+		return null;
 	}
+	
 	public boolean checkWin()
 	{
 		for (Stack<Card> s: columns)
