@@ -16,6 +16,7 @@ public class Solitaire {
 	ArrayList<Stack <Card>> columns;
 	Queue<Card> deck;
 	Stack<Card> revealed;
+	ArrayList<Stack<Card>> finalPiles;
 	
 	public Solitaire(){
 		//deck.add
@@ -23,6 +24,7 @@ public class Solitaire {
 		columns = new ArrayList();
         deck = new LinkedList<>();
 		revealed = new Stack();
+		finalPiles = new ArrayList<>();
 
 		for(Card.Suit s: Card.Suit.values()){
 			for(int i = 1; i < 14; i++){
@@ -69,10 +71,10 @@ public class Solitaire {
 	public void reveal3(){
 		Card c = null;
 		for (int i = 0; i < 3; i++){
-		c = deck.remove();
-		revealed.add(c);
-		//System.out.println(c);
-	}
+			c = deck.poll();
+			revealed.add(c);
+			//System.out.println(c);
+		}
 	    
 	} 
 
@@ -86,9 +88,21 @@ public class Solitaire {
 
 	//the part of your program that's in charge of game rules goes here.
 
-	public boolean checkRelease(Card current, Card m, boolean type){
+	public boolean checkRelease(Card current, Card m){
+		boolean type;
+		for(Card c: columns){
+			if(c.equals(m)){
+				type = true;
+			}
+		}
+		for(Card c: finalPiles){
+			if(c.equals(m)){
+				type = false;
+			}
+		}
 		if(type){
 			if((m.suit.equals(current.suit))&&(m.value == (current.value-1))){
+				//columns[]
 				return true;
 			}
 		} else {
@@ -127,7 +141,7 @@ public class Solitaire {
 		}
 		return null;
 	}
-
+	
 	public boolean checkClick(int x, int y)
 	{
 		return true;
