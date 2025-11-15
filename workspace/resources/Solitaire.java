@@ -89,15 +89,19 @@ public class Solitaire {
 	//the part of your program that's in charge of game rules goes here.
 
 	public boolean checkRelease(Card current, Card m){
-		boolean type;
-		for(Card c: columns){
-			if(c.equals(m)){
-				type = true;
+		boolean type = false;
+		for(Stack<Card> s: columns){
+			for(Card c: s){
+				if(c.equals(m)){
+					type = true;
+				}
 			}
 		}
-		for(Card c: finalPiles){
-			if(c.equals(m)){
-				type = false;
+		for(Stack<Card> t: finalPiles){
+			for(Card b: t){
+				if(b.equals(m)){
+					type = false;
+				}
 			}
 		}
 		if(type){

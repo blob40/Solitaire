@@ -26,7 +26,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	private JLayeredPane draggablePane;
 	private JPanel deckPanel ;
 	private JPanel reveal;
-	private JLayeredPane pile1;
+	private JLayeredPane pile1  = new JLayeredPane();;
 	private JPanel completed;
 	private Point originalLocation;
 
@@ -89,7 +89,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 		this.add(reveal);
 
 		// 7 piles for solitare
-		JLayeredPane pile1 = new JLayeredPane();
 		pile1.setLocation(20, 175);
 		this.add(pile1);
 
@@ -186,26 +185,6 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
     }
 
 private void update() {
-
-    /*columns.removeAll();
-    topColumns.removeAll();
-	ArrayList<Stack<Card>> allColumns = game.getColumns();
-
-	for(Stack<Card> stack: allColumns) {
-		topColumns.add(drawPile(stack, false)); 
-	}
-
-	columns.add(drawDeck(game.getDeck()));
-	columns.add(drawPile(game.getPile(), true));
-	columns.add(drawFinal(game.hearts, "hearts"));
-	columns.add(drawFinal(game.spades, "spades"));
-	columns.add(drawFinal(game.diamonds, "diamonds"));
-	columns.add(drawFinal(game.clubs, "clubs"));
-	System.out.println("updating");
-
-    this.revalidate();
-    this.repaint();*/
-
 	int xOffset = 0;
 		int yOffset = 130;
 		int newOffset = 130;
@@ -226,7 +205,7 @@ private void update() {
 				 } 
 				 else {
 				  	c.hide();
-				 }
+				 }						 
 				pile1.add(c);
 				yOffset -= 20; 
 			}
@@ -281,21 +260,19 @@ private void update() {
 	@Override
 
 	//ALEX
+	//Pre-condition: none
+	//Post-condition:Mouse moves is tracked
 	public void mouseMoved(MouseEvent arg0) {
 		double screenx = arg0.getX();
-		double screeny = arg0.getY();
-
-		//System.out.println("screen x " + screenx + "screen y " + screeny);
-		// TODO Auto-generated method stub
-		
+		double screeny = arg0.getY();		
 	}
 	
 	@Override
 	//ALEX
-	//DONE FULLY COMPLETE DO NOT MESS WITH
+	//Pre-condition: Deck is not empty
+	//Post-condition: 3 cards are revealed from deck and once 6 are in frame it resets
 	public void mouseClicked(MouseEvent arg0){
-		//Do an if statment making sure it is clicking deck and not pile 1
-		System.out.println("Mouse Clicked");
+		reveal.setLayout(null);
 		Stack<Card> revealed;
 		Point p = SwingUtilities.convertPoint((Component)arg0.getSource(), arg0.getPoint(), deckPanel);	
 		
@@ -303,11 +280,10 @@ private void update() {
 			Card c = (Card)deckPanel.getComponentAt(p);
 			revealed = game.getRevealed();
 			Object [] cards = revealed.toArray();
-			System.out.println(revealed);
 			for (int i=0; i<cards.length; i++){
 					Card d = (Card)cards[i];
 					d.show();
-					d.setSize(new Dimension(90, 120));
+					d.setSize(90, 120);
 					d.setLocation(5+i*20, 25);
 					reveal.add(d,0);
 			}
@@ -325,7 +301,8 @@ private void update() {
 					game.resetRevealed();
 					game.reveal3();
 					revealed = game.getRevealed();
-					System.out.println(revealed);
+					Object [] cards = revealed.toArray();
+					
 					
 					 for (Component comp : reveal.getComponents()) {
 						 if (comp instanceof Card){
@@ -333,9 +310,6 @@ private void update() {
 					    	reveal.remove(comp); 
 						 }
 					 }
-				
-			Object [] cards = revealed.toArray();
-			System.out.println(revealed);
 			for (int i=0; i<cards.length; i++){
 					Card d = (Card)cards[i];
 					d.show();
@@ -518,12 +492,15 @@ private void update() {
 						//have the game decide where the cards move
 						//move the cards internally inside the game.
 						game.checkRelease(clicked1, clicked2);
-						//redraw the cards
 						update();
 						clicked1 = null;
-							clicked2 = null;
-							clicked1.setBorder(null);
-							repaint();
+						clicked2 = null;
+						clicked1.setBorder(null);
+						repaint();
+						//redraw the cards
+						
+						}
+						
 					}
 						// Object [] cards = pile1.getComponents();
 						// for(Object comp: cards){
