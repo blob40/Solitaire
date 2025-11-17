@@ -276,65 +276,69 @@ private void update() {
 	//Pre-condition: Deck is not empty
 	//Post-condition: 3 cards are revealed from deck and once 6 are in frame it resets
 	public void mouseClicked(MouseEvent arg0){
-		reveal.setLayout(null);
-		Stack<Card> revealed;
-		Point p = SwingUtilities.convertPoint((Component)arg0.getSource(), arg0.getPoint(), deckPanel);	
-		
-		if(deckPanel.contains(p) && game.getDeck().peek() != null && reveal.getComponentCount() <= 6){
-			Card c = (Card)deckPanel.getComponentAt(p);
-			revealed = game.getRevealed();
-			Object [] cards = revealed.toArray();
-			for (int i=0; i<cards.length; i++){
-					Card d = (Card)cards[i];
-					d.show();
-					d.setSize(90, 120);
-					d.setLocation(5+i*20, 25);
-					reveal.add(d,0);
-			}
-			Card f = game.getDeck().peek();
-			f.hide();
-			f.setLocation(5, 25);
-			f.setSize(90,120);
-			deckPanel.add(f);
-			game.reveal3();
-			revealed = game.getRevealed();
-			repaint();
+		//if statment for what mouseClicked is doing
+		//deckPanel.contains(arg0.getPoint())
+		Point t = arg0.getPoint();
+		if(deckPanel.contains(t)){
+			reveal.setLayout(null);
+			Stack<Card> revealed;
+			Point p = SwingUtilities.convertPoint((Component)arg0.getSource(), arg0.getPoint(), deckPanel);	
 			
-		} else if (deckPanel.contains(p) && game.getDeck().peek() != null){
-			//reset revealed cards back to deck
-					game.resetRevealed();
-					game.reveal3();
-					revealed = game.getRevealed();
-					Object [] cards = revealed.toArray();
-					
-					
-					 for (Component comp : reveal.getComponents()) {
-						 if (comp instanceof Card){
-							comp.setPreferredSize(new Dimension(90,100));
-					    	reveal.remove(comp); 
-						 }
-					 }
-			for (int i=0; i<cards.length; i++){
-					Card d = (Card)cards[i];
-					d.show();
-					d.setSize(90, 120);
-					d.setLocation(5+i*20, 25);
-					reveal.add(d,0);
-			}
-			Card f = game.getDeck().peek();
-			f.hide();
-			f.setLocation(5, 25);
-			f.setSize(90,120);
-			deckPanel.add(f);
-				
-				// Prepare next 3 cards for next click
+			if(deckPanel.contains(p) && game.getDeck().peek() != null && reveal.getComponentCount() <= 6){
+				Card c = (Card)deckPanel.getComponentAt(p);
+				revealed = game.getRevealed();
+				Object [] cards = revealed.toArray();
+				for (int i=0; i<cards.length; i++){
+						Card d = (Card)cards[i];
+						d.show();
+						d.setSize(90, 120);
+						d.setLocation(5+i*20, 25);
+						reveal.add(d,0);
+				}
+				Card f = game.getDeck().peek();
+				f.hide();
+				f.setLocation(5, 25);
+				f.setSize(90,120);
+				deckPanel.add(f);
 				game.reveal3();
 				revealed = game.getRevealed();
 				repaint();
-	
+				
+			} else if (deckPanel.contains(p) && game.getDeck().peek() != null){
+				//reset revealed cards back to deck
+						game.resetRevealed();
+						game.reveal3();
+						revealed = game.getRevealed();
+						Object [] cards = revealed.toArray();
+						
+						
+						for (Component comp : reveal.getComponents()) {
+							if (comp instanceof Card){
+								comp.setPreferredSize(new Dimension(90,100));
+								reveal.remove(comp); 
+							}
+						}
+				for (int i=0; i<cards.length; i++){
+						Card d = (Card)cards[i];
+						d.show();
+						d.setSize(90, 120);
+						d.setLocation(5+i*20, 25);
+						reveal.add(d,0);
 				}
+				Card f = game.getDeck().peek();
+				f.hide();
+				f.setLocation(5, 25);
+				f.setSize(90,120);
+				deckPanel.add(f);
 					
-					 
+					// Prepare next 3 cards for next click
+					game.reveal3();
+					revealed = game.getRevealed();
+					repaint();
+		
+					}
+					
+			}
 	}
 
 
@@ -473,8 +477,11 @@ private void update() {
 
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			boolean type = false;
-			boolean moved = false;
+			//System.out.println(ep.toString);
+			System.out.println(deckPanel.getBounds());
+			if (pile1.contains(e.getPoint()) || completed.contains(e.getPoint()) || reveal.contains(e.getPoint())){
+				boolean type = false;
+				boolean moved = false;
 				if(clicked1== null){
 					clicked1 = (Card)e.getComponent();
 					System.out.print(clicked1.toString());
@@ -484,31 +491,24 @@ private void update() {
 				else if(clicked2 == null){
 					clicked2 = (Card)e.getComponent();
 					System.out.print(clicked2.toString());
-						if (clicked1.isReversed)
-						{
-							clicked1 = null;
-							clicked2 = null;
-							clicked1.setBorder(null);
-							repaint();
-							return;
-						}
-						
-						//have the game decide where the cards move
-						//move the cards internally inside the game.
-						System.out.println("before check release");
-						game.checkRelease(clicked1, clicked2);
-						System.out.println("after check release");
-						update();
-						clicked1.setBorder(null);
+					if (clicked1.isReversed){
 						clicked1 = null;
 						clicked2 = null;
-						
 						repaint();
-						//redraw the cards
-						
-						}
-						
+						return;
 					}
+					System.out.println("before check release");
+					game.checkRelease(clicked1, clicked2);
+					System.out.println("after check release");
+					update();
+					clicked1.setBorder(null);
+					clicked1 = null;
+					clicked2 = null;
+					repaint();	
+				}
+		}				
+			
+		}
 						// Object [] cards = pile1.getComponents();
 						// for(Object comp: cards){
 						// 	if(((Component) comp).getLocation() == clicked2.getLocation()){

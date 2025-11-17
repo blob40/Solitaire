@@ -88,7 +88,7 @@ public class Solitaire {
 
 	//the part of your program that's in charge of game rules goes here.
 
-	public boolean checkRelease(Card current, Card m){
+	public void checkRelease(Card current, Card m){
 		System.out.println("Check Realease started");
 		//moving from one column to antoher column
 		boolean type = false;
@@ -139,15 +139,12 @@ public class Solitaire {
 				}
 				System.out.println("was a legal move to columns");
 				//columns[]
-				return true;
+				
 			}
-		} else {
-			if((m.suit.isRed && !current.suit.isRed)&&(m.value == (current.value+1))){
-				return true;
-			}
-		}
-		return false;
-	} 
+		} 
+	}
+		
+	
 
 	public JLayeredPane checkPress(Card c, JLayeredPane pile)
 	{
