@@ -30,6 +30,7 @@ public class Solitaire {
 			for(int i = 1; i < 14; i++){
 				Card newC = new Card(i,s);
 				deck.add(newC);
+				newC.hide();
 			}
 		}
 	}
@@ -43,6 +44,9 @@ public class Solitaire {
 			Stack<Card> row = new Stack<>();
 			for(int z = j; z>=0; z--){
 				row.push(deck.remove());
+				if(z==0){
+					row.peek().show();
+				}
 				//System.out.println("row " + row);
 			}
 			columns.add(row);
@@ -89,7 +93,7 @@ public class Solitaire {
 	//the part of your program that's in charge of game rules goes here.
 
 	public void checkRelease(Card current, Card m){
-		System.out.println("Check Realease started");
+		//System.out.println("Check Realease started");
 		//moving from one column to antoher column
 		boolean type = false;
 		Stack<Card> temp = new Stack<>();
@@ -120,14 +124,10 @@ public class Solitaire {
 				}
 				toMove = null;
 			}
-			System.out.println("made it into stack to stack movement");
-			System.out.println(m.suit.isRed+" "+current.suit.isRed+" "+m.value+" "+ current.value);
+			// System.out.println("made it into stack to stack movement");
+			// System.out.println(m.suit.isRed+" "+current.suit.isRed+" "+m.value+" "+ current.value);
 			if(m.suit.isRed != current.suit.isRed && m.value == current.value+1){
 				System.out.println("is legal move");
-				if(toMove!=null){
-					temp.push(current);
-				}
-				else{
 					Stack<Card> backwards = new Stack();
 					while(toMove.peek()!= current){
 						backwards.push(toMove.pop());
@@ -137,12 +137,14 @@ public class Solitaire {
 						temp.push(backwards.pop());
 					}
 				}
-				System.out.println("was a legal move to columns");
+				if(!toMove.isEmpty())
+					toMove.peek().show();
+				//System.out.println("was a legal move to columns");
 				//columns[]
 				
 			}
 		} 
-	}
+	
 		
 	
 

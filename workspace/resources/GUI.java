@@ -130,34 +130,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 	   }
 
 		game.setup();
-		int xOffset = 0;
-		int yOffset = 130;
-		int newOffset = 130;
-		//Card c: row
-
-
-		for(Stack<Card> row: game.columns){
-			Object[] rowOb;
-			rowOb = row.toArray();
-			Card c;
-			for(int i = rowOb.length-1; i >= 0; i--){
-				c = (Card) rowOb[i];
-				//System.out.println("Adding card: " + c.toString());
-				c.setLocation(xOffset, yOffset);
-				c.setSize(new Dimension(80, 113)); 
-				 if (i==rowOb.length-1){
-				 	c.show();
-				 } 
-				 else {
-				  	c.hide();
-				 }
-				pile1.add(c);
-				yOffset -= 20; 
-			}
-			newOffset -= 20;
-			yOffset = newOffset;
-			xOffset += 110;
-		}
+		update();
 		pile1.setBorder(BorderFactory.createMatteBorder(2,2,2,2, Color.BLUE));
 		pile1.setSize(750, 350);
 
@@ -202,14 +175,6 @@ private void update() {
 				//System.out.println("Adding card: " + c.toString());
 				c.setLocation(xOffset, yOffset);
 				c.setSize(new Dimension(80, 113)); 
-				//  if (i==rowOb.length-1){
-				//  	c.show();
-				//  } 
-				//  else {
-				//   	c.hide();
-				//  }	
-				c.show();		
-				 System.out.println("trying to add "+c);			 
 				pile1.add(c);
 				yOffset -= 20; 
 			}
@@ -479,7 +444,7 @@ private void update() {
 		public void mouseClicked(MouseEvent e) {
 			//System.out.println(ep.toString);
 			System.out.println(deckPanel.getBounds());
-			if (pile1.contains(e.getPoint()) || completed.contains(e.getPoint()) || reveal.contains(e.getPoint())){
+		//	if (pile1.contains(e.getPoint()) || completed.contains(e.getPoint()) || reveal.contains(e.getPoint())){
 				boolean type = false;
 				boolean moved = false;
 				if(clicked1== null){
@@ -506,7 +471,7 @@ private void update() {
 					clicked2 = null;
 					repaint();	
 				}
-		}				
+		//}				
 			
 		}
 						// Object [] cards = pile1.getComponents();
