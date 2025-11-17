@@ -89,10 +89,14 @@ public class Solitaire {
 	//the part of your program that's in charge of game rules goes here.
 
 	public boolean checkRelease(Card current, Card m){
+		System.out.println("Check Realease started");
+		//moving from one column to antoher column
 		boolean type = false;
+		Stack<Card> temp = new Stack<>();
 		for(Stack<Card> s: columns){
 			for(Card c: s){
 				if(c.equals(m)){
+					temp = s;
 					type = true;
 				}
 			}
@@ -105,7 +109,35 @@ public class Solitaire {
 			}
 		}
 		if(type){
-			if((m.suit.equals(current.suit))&&(m.value == (current.value-1))){
+			Stack<Card> toMove = null;
+			outerloop:
+			for(Stack<Card> s: columns){
+				for(Card c: s){
+					if(c == current ){
+						toMove = s;
+						break outerloop;
+					}
+				}
+				toMove = null;
+			}
+			System.out.println("made it into stack to stack movement");
+			System.out.println(m.suit.isRed+" "+current.suit.isRed+" "+m.value+" "+ current.value);
+			if(m.suit.isRed != current.suit.isRed && m.value == current.value+1){
+				System.out.println("is legal move");
+				if(toMove!=null){
+					temp.push(current);
+				}
+				else{
+					Stack<Card> backwards = new Stack();
+					while(toMove.peek()!= current){
+						backwards.push(toMove.pop());
+					}
+					backwards.push(toMove.pop());
+					while(!backwards.isEmpty()){
+						temp.push(backwards.pop());
+					}
+				}
+				System.out.println("was a legal move to columns");
 				//columns[]
 				return true;
 			}

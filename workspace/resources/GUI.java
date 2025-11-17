@@ -142,7 +142,7 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
 			Card c;
 			for(int i = rowOb.length-1; i >= 0; i--){
 				c = (Card) rowOb[i];
-				System.out.println("Adding card: " + c.toString());
+				//System.out.println("Adding card: " + c.toString());
 				c.setLocation(xOffset, yOffset);
 				c.setSize(new Dimension(80, 113)); 
 				 if (i==rowOb.length-1){
@@ -185,7 +185,9 @@ public class GUI extends JFrame implements ActionListener, MouseListener, MouseM
     }
 
 private void update() {
-	int xOffset = 0;
+
+		pile1.removeAll();
+		int xOffset = 0;
 		int yOffset = 130;
 		int newOffset = 130;
 		//Card c: row
@@ -197,15 +199,17 @@ private void update() {
 			Card c;
 			for(int i = rowOb.length-1; i >= 0; i--){
 				c = (Card) rowOb[i];
-				System.out.println("Adding card: " + c.toString());
+				//System.out.println("Adding card: " + c.toString());
 				c.setLocation(xOffset, yOffset);
 				c.setSize(new Dimension(80, 113)); 
-				 if (i==rowOb.length-1){
-				 	c.show();
-				 } 
-				 else {
-				  	c.hide();
-				 }						 
+				//  if (i==rowOb.length-1){
+				//  	c.show();
+				//  } 
+				//  else {
+				//   	c.hide();
+				//  }	
+				c.show();		
+				 System.out.println("trying to add "+c);			 
 				pile1.add(c);
 				yOffset -= 20; 
 			}
@@ -474,7 +478,7 @@ private void update() {
 				if(clicked1== null){
 					clicked1 = (Card)e.getComponent();
 					System.out.print(clicked1.toString());
-					clicked1.setBorder(BorderFactory.createMatteBorder(0,0,0,0, Color.RED));
+					clicked1.setBorder(BorderFactory.createMatteBorder(2,2,2,2, Color.RED));
 					return;
 				}
 				else if(clicked2 == null){
@@ -491,11 +495,14 @@ private void update() {
 						
 						//have the game decide where the cards move
 						//move the cards internally inside the game.
+						System.out.println("before check release");
 						game.checkRelease(clicked1, clicked2);
+						System.out.println("after check release");
 						update();
+						clicked1.setBorder(null);
 						clicked1 = null;
 						clicked2 = null;
-						clicked1.setBorder(null);
+						
 						repaint();
 						//redraw the cards
 						

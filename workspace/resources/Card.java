@@ -79,6 +79,8 @@ public class Card extends JPanel{
 			return valueString(value) + " of " + suit.name().toLowerCase();
 		}
 		
+	
+
 		/**
 		 * Returns a string that can be used to re-initialize the card
 		 * @return {String} Class properties, " of " separated.
