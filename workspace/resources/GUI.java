@@ -162,7 +162,7 @@ private void update() {
 		pile1.removeAll();
 		int xOffset = 0;
 		int yOffset = 130;
-		int newOffset = 130;
+		int newOffset = 18 * 7;
 		//Card c: row
 
 
@@ -179,7 +179,7 @@ private void update() {
 				yOffset -= 20; 
 			}
 			newOffset -= 20;
-			yOffset = newOffset;
+			yOffset = 15 * row.size();
 			xOffset += 110;
 		}
 
@@ -242,9 +242,6 @@ private void update() {
 	//Post-condition: 3 cards are revealed from deck and once 6 are in frame it resets
 	public void mouseClicked(MouseEvent arg0){
 		//if statment for what mouseClicked is doing
-		//deckPanel.contains(arg0.getPoint())
-		Point t = arg0.getPoint();
-		if(deckPanel.contains(t)){
 			reveal.setLayout(null);
 			Stack<Card> revealed;
 			Point p = SwingUtilities.convertPoint((Component)arg0.getSource(), arg0.getPoint(), deckPanel);	
@@ -277,12 +274,13 @@ private void update() {
 						Object [] cards = revealed.toArray();
 						
 						
-						for (Component comp : reveal.getComponents()) {
-							if (comp instanceof Card){
-								comp.setPreferredSize(new Dimension(90,100));
-								reveal.remove(comp); 
-							}
+					for (Component comp : reveal.getComponents()) {
+						if (comp instanceof Card){
+							comp.setPreferredSize(new Dimension(90,100));
+							reveal.remove(comp); 
 						}
+					}
+
 				for (int i=0; i<cards.length; i++){
 						Card d = (Card)cards[i];
 						d.show();
@@ -303,7 +301,6 @@ private void update() {
 		
 					}
 					
-			}
 	}
 
 
@@ -443,7 +440,6 @@ private void update() {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			//System.out.println(ep.toString);
-			System.out.println(deckPanel.getBounds());
 		//	if (pile1.contains(e.getPoint()) || completed.contains(e.getPoint()) || reveal.contains(e.getPoint())){
 				boolean type = false;
 				boolean moved = false;

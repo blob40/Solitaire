@@ -1,14 +1,10 @@
               package resources;
-import java.util.ArrayList;
 import java.util.Queue;
-import java.util.Stack;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLayeredPane;
 
-import java.util.Collections;
 import java.util.List;
-import java.awt.Component;
 import java.awt.*;
 import java.util.*;
 
@@ -77,7 +73,7 @@ public class Solitaire {
 		for (int i = 0; i < 3; i++){
 			c = deck.poll();
 			revealed.add(c);
-			//System.out.println(c);
+			System.out.println(revealed);
 		}
 	    
 	} 
@@ -94,9 +90,11 @@ public class Solitaire {
 
 	public void checkRelease(Card current, Card m){
 		//System.out.println("Check Realease started");
-		//moving from one column to antoher column
+		//moving from one column to another column
 		boolean type = false;
 		Stack<Card> temp = new Stack<>();
+		
+		// Find if m is in columns
 		for(Stack<Card> s: columns){
 			for(Card c: s){
 				if(c.equals(m)){
@@ -105,48 +103,94 @@ public class Solitaire {
 				}
 			}
 		}
+		
+		Stack<Card> finalPile = null;
+		// Find if m is in final piles
 		for(Stack<Card> t: finalPiles){
 			for(Card b: t){
 				if(b.equals(m)){
 					type = false;
+					finalPile = t;
 				}
 			}
 		}
-		if(type){
-			Stack<Card> toMove = null;
-			outerloop:
-			for(Stack<Card> s: columns){
-				for(Card c: s){
-					if(c == current ){
-						toMove = s;
-						break outerloop;
-					}
-				}
-				toMove = null;
-			}
-			// System.out.println("made it into stack to stack movement");
-			// System.out.println(m.suit.isRed+" "+current.suit.isRed+" "+m.value+" "+ current.value);
-			if(m.suit.isRed != current.suit.isRed && m.value == current.value+1){
-				System.out.println("is legal move");
-					Stack<Card> backwards = new Stack();
-					while(toMove.peek()!= current){
-						backwards.push(toMove.pop());
-					}
-					backwards.push(toMove.pop());
-					while(!backwards.isEmpty()){
-						temp.push(backwards.pop());
-					}
-				}
-				if(!toMove.isEmpty())
-					toMove.peek().show();
-				//System.out.println("was a legal move to columns");
-				//columns[]
-				
-			}
-		} 
-	
+
+		Stack<Card> toMove = null;
 		
-	
+		// Find source stack
+		if (revealed != null && !revealed.isEmpty()) {
+			System.out.println(revealed.get(0));
+			Card lastRevealed = revealed.get(revealed.size() - 1);
+			if (current.equals(lastRevealed)) {
+				Stack<Card> tempR = new Stack<>();
+				tempR.add(lastRevealed);
+				toMove = tempR;
+			}
+		}
+
+		outerloop:
+		for (Stack<Card> s : columns) {
+			for (Card c : s) {
+				if (c == current && !c.isReversed) {
+					toMove = s;
+					break outerloop;
+				}
+			}
+		}
+		
+		// Move to columns
+		if (type && toMove != null && m.suit.isRed != current.suit.isRed && m.value == current.value+1){
+			//System.out.println("is legal move");
+			Stack<Card> backwards = new Stack();
+			System.out.println("To move " + toMove);
+			while(!toMove.isEmpty() && toMove.peek()!= current){
+				backwards.push(toMove.pop());
+			}
+			if(!toMove.isEmpty()){
+				backwards.push(toMove.pop());
+			}
+			while(!backwards.isEmpty()){
+				temp.push(backwards.pop());
+			}
+			
+			if(toMove != null && !toMove.isEmpty())
+				toMove.peek().show();
+		}
+		
+		// Move to final piles - case where m exists (moving onto existing card)
+		if (!type && finalPile != null && toMove != null && current.value == m.value + 1 && current.suit == m.suit) {
+			System.out.println("Legal move to final pile (onto existing card)");
+			Card cardToMove = toMove.pop();
+			finalPile.push(cardToMove);
+			// If card came from revealed pile, remove it from there too
+			if (revealed != null && !revealed.isEmpty() && revealed.contains(cardToMove)) {
+				revealed.remove(cardToMove);
+			}
+			if(toMove != null && !toMove.isEmpty())
+				toMove.peek().show();
+		}
+		
+		// Move to final piles - case where m is null (moving to empty pile with Ace)
+		if (m == null && toMove != null && current.value == 1) {
+			// Find an empty final pile
+			for (Stack<Card> pile : finalPiles) {
+				if (pile.isEmpty()) {
+					System.out.println("Legal move to empty final pile (Ace)");
+					Card cardToMove = toMove.pop();
+					pile.push(cardToMove);
+					// If card came from revealed pile, remove it from there too
+					if (revealed != null && !revealed.isEmpty() && revealed.contains(cardToMove)) {
+						revealed.remove(cardToMove);
+					}
+					if(toMove != null && !toMove.isEmpty())
+						toMove.peek().show();
+					break;
+				}
+			}
+		}
+
+		System.out.print(columns);
+	}
 
 	public JLayeredPane checkPress(Card c, JLayeredPane pile)
 	{
